@@ -24,7 +24,7 @@ export default function ContactPage() {
   const [contactNumber, setContactNumber] = useState('');
   const [address, setAddress] = useState('');
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const { height } = Dimensions.get('window');
   const [isEditMode, setIsEditMode] = useState(false);
   useEffect(() => {
@@ -47,7 +47,9 @@ export default function ContactPage() {
     return () => clearInterval(intervalId);
   }, []);
 
-
+  useEffect(() =>{
+    
+  })
   const handleAddContact = async () => {
     if (!contactName || !contactNumber || !address) {
       alert("Please fill out all fields.");
@@ -142,21 +144,28 @@ export default function ContactPage() {
       `http://192.168.254.117:7037/api/contact/deleteContact/${selectedContact.addContactsId}`
     );
 
-      console.log("Delete successful:", response.data.message);
-      setContactName('');
-      setContactNumber('');
-      setAddress('');
-      setSelectedContact(null);
-      setIsEditMode(false);
-      setShowContactForm(false);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error("Delete error:", err.message);
-      } else {
-        console.error("Unknown error:", err);
-      }
+    console.log("Delete successful:", response.data.message);
+
+    // Remove deleted contact from contacts state
+    setContacts(prevContacts =>
+      prevContacts.filter(c => c.addContactsId !== selectedContact.addContactsId)
+    );
+
+    setContactName('');
+    setContactNumber('');
+    setAddress('');
+    setSelectedContact(null);
+    setIsEditMode(false);
+    setShowContactForm(false);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error("Delete error:", err.message);
+    } else {
+      console.error("Unknown error:", err);
     }
-  };
+  }
+};
+
 
 
   return (
@@ -199,16 +208,21 @@ export default function ContactPage() {
           <FontAwesome name="plus-circle" size={35} color="orange" />
         </TouchableOpacity>  
         </View>
-      {/* Circle rendering starts here */}
-      <View style={styles.circleContainer}>
-        {contacts.map((contact, index) => (
-          <TouchableOpacity key={index} onPress={() => handleSelectContact(contact)}>
-            <View style={styles.circle}>
-              <FontAwesome name="user" size={25} color="black" />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {contacts.length > 0 ? (
+        <View key={contacts.length} style={styles.circleContainer}>
+          {contacts.map((contact, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleSelectContact(contact)}
+              disabled={contacts.length === 0}  // extra safety
+            >
+              <View style={styles.circle}>
+                <FontAwesome name="user" size={25} color="black" />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      ) : null}
       {showContactForm && (
       <View style={{position: 'absolute', top:120, right: 0}}>
         <View style={{width: 300, height: windowHeight * 0.80, backgroundColor: 'white', borderRadius: 15,      borderWidth: 4, borderColor: '#409172', alignItems: 'center', gap: 50, padding: 40}}>
