@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import axios from "axios";
+import Config from "@/constants/Config";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function ProfileScreen() {
 
   const getUserInfo = async () => {
     try {
-      const response = await axios.get("http://192.168.254.117:7037/api/account/userinfo", {
+      const response = await axios.get(`${Config.Account_API}/account/userinfo`, {
         withCredentials: true,
       });
 
@@ -55,7 +56,7 @@ export default function ProfileScreen() {
       };
 
       const response = await axios.put(
-        "http://192.168.254.117:7037/api/account/updateInfo",
+        `${Config.Account_API}/updateInfo`,
         updateData,
         {
           withCredentials: true,

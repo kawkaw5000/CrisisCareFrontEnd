@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { FontAwesome } from '@expo/vector-icons';
+import Config from "@/constants/Config";
 type Contact = {
   contactName: string;
   contactNumber: string;
@@ -30,7 +31,7 @@ export default function ContactPage() {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const res = await axios.get("http://192.168.254.117:7037/api/contact/contactlist", {
+        const res = await axios.get(`${Config.Contact_API}/contactlist`, {
           withCredentials: true,
         });
 
@@ -58,7 +59,7 @@ export default function ContactPage() {
 
     try {
       const response = await axios.post(
-        'http://192.168.254.117:7037/api/contact/addContact',
+        `${Config.Contact_API}/addContact`,
         {
           contactName,
           contactNumber,
@@ -86,7 +87,7 @@ export default function ContactPage() {
 
     try {
       const response = await axios.put(
-        "http://192.168.254.117:7037/api/contact/updateContact",
+        `${Config.Contact_API}/updateContact`,
         {
           addContactsId: selectedContact.addContactsId,
           contactName,
@@ -141,7 +142,7 @@ export default function ContactPage() {
 
   try {
     const response = await axios.delete(
-      `http://192.168.254.117:7037/api/contact/deleteContact/${selectedContact.addContactsId}`
+      `${Config.Contact_API}/deleteContact/${selectedContact.addContactsId}`
     );
 
     console.log("Delete successful:", response.data.message);
