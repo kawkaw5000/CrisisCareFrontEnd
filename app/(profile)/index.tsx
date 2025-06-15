@@ -23,7 +23,7 @@ export default function ProfileScreen() {
 
   const getUserInfo = async () => {
     try {
-      const response = await axios.get(`${Config.Account_API}/account/userinfo`, {
+      const response = await axios.get(`${Config.Account_API}/userinfo`, {
         withCredentials: true,
       });
 
